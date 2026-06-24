@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ساخت تصویر واقعی و جذاب - نسخه حرفه‌ای</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            border-radius: 40px;
+            padding: 35px 30px;
+            box-shadow: 0 30px 50px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .card-full {
+            grid-column: 1 / -1;
+        }
+        h1 {
+            text-align: center;
+            color: #f0e9db;
+            font-weight: 400;
+            letter-spacing: 1px;
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.4);
+        }
+        h1 span {
+            background: linear-gradient(135deg, #facc15, #f97316);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+        }
+        .param-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px 25px;
+            background: rgba(0,0,0,0.25);
+            padding: 25px;
+            border-radius: 28px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+        .param-item {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .param-item label {
+            color: #cbd5e1;
+            font-size: 0.9rem;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .param-item input, .param-item select {
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 16px;
+            padding: 12px 16px;
+            color: #f1f5f9;
+            font-size: 0.95rem;
+            transition: 0.25s;
+            outline: none;
+            backdrop-filter: blur(4px);
+        }
+        .param-item input:focus, .param-item select:focus {
+            border-color: #facc15;
+            background: rgba(255,255,255,0.12);
+            box-shadow: 0 0 0 3px rgba(250,204,21,0.2);
+        }
+        .param-item input[type="range"] {
+            padding: 0;
+            height: 6px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 10px;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+        .param-item input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            background: #facc15;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 12px #facc15aa;
+            border: 2px solid #0f172a;
+        }
+        .param-item .range-value {
+            color: #facc15;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-top: 2px;
+        }
+        .full-width {
+            grid-column: 1 / -1;
+        }
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 18px;
+            margin: 25px 0 20px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.15);
+            padding: 14px 34px;
+            border-radius: 60px;
+            color: #f1f5f9;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.25s;
+            backdrop-filter: blur(6px);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #facc15, #f97316);
+            border: none;
+            color: #0f172a;
+            font-weight: 700;
+            box-shadow: 0 8px 24px #f9731680;
+        }
+        .btn-primary:hover {
+            transform: scale(1.03);
+            box-shadow: 0 12px 32px #f97316b0;
+        }
+        .btn-secondary {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.18);
+        }
+        .btn-success {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            border: none;
+            color: white;
+            font-weight: 700;
+            box-shadow: 0 8px 24px #22c55e80;
+        }
+        .btn-success:hover {
+            transform: scale(1.03);
+            box-shadow: 0 12px 32px #22c55eb0;
+        }
+        .image-container {
+            margin-top: 20px;
+            border-radius: 28px;
+            overflow: hidden;
+            background: #0b1120;
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.7), 0 20px 30px -10px black;
+            border: 1px solid rgba(255,255,255,0.06);
+            position: relative;
+        }
+        #imageCanvas {
+            display: block;
+            width: 100%;
+            height: auto;
+            aspect-ratio: 16 / 9;
+            background: radial-gradient(circle at 20% 30%, #1e293b, #0a0f1a);
+            transition: 0.2s;
+        }
+        .image-caption {
+            text-align: center;
+            padding: 14px 10px 10px;
+            color: #94a3b8;
+            font-size: 0.85rem;
+            border-top: 1px solid rgba(255,255,255,0.04);
+            background: rgba(0,0,0,0.2);
+            backdrop-filter: blur(4px);
+            letter-spacing: 0.3px;
+        }
+        .image-caption strong {
+            color: #facc15;
+            font-weight: 500;
+        }
+        
+        /* بخش تاریخچه و گالری */
+        .history-section {
+            margin-top: 20px;
+        }
+        .history-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+            padding: 10px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 16px;
+        }
+        .history-item {
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: 0.3s;
+            aspect-ratio: 16/9;
+        }
+        .history-item:hover {
+            border-color: #facc15;
+            transform: scale(1.05);
+        }
+        .history-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 15px 0;
+            padding: 15px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 16px;
+        }
+        .stat-item {
+            text-align: center;
+            color: #cbd5e1;
+        }
+        .stat-item .number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #facc15;
+        }
+        
+        /* ===== فوتر جدید ===== */
+        .footer {
+            margin-top: 30px;
+            padding: 20px;
+            text-align: center;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            background: rgba(0,0,0,0.15);
+            border-radius: 20px;
+        }
+        .footer .creator {
+            color: #f1f5f9;
+            font-size: 1rem;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+        .footer .creator strong {
+            background: linear-gradient(135deg, #facc15, #f97316);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+        }
+        .footer .channel-link {
+            display: inline-block;
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: 0.3s;
+            padding: 8px 20px;
+            border-radius: 30px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(4px);
+        }
+        .footer .channel-link:hover {
+            color: #facc15;
+            border-color: #facc15;
+            background: rgba(250,204,21,0.1);
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(250,204,21,0.2);
+        }
+        .footer .channel-link i {
+            font-style: normal;
+            margin-left: 8px;
+        }
+        .footer .channel-link .eitaa-icon {
+            display: inline-block;
+            background: #22c55e;
+            color: white;
+            width: 24px;
+            height: 24px;
+            line-height: 24px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 14px;
+            margin-left: 8px;
+            text-align: center;
+        }
+        
+        @media (max-width: 900px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+        @media (max-width: 650px) {
+            .param-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            .card { padding: 20px; }
+            h1 { font-size: 1.8rem; }
+            .footer .creator { font-size: 0.9rem; }
+        }
+        
+        /* انیمیشن لودینگ */
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 1.2rem;
+            background: rgba(0,0,0,0.7);
+            padding: 20px 30px;
+            border-radius: 12px;
+            display: none;
+        }
+        .loading.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- بخش اصلی -->
+        <div class="card card-full">
+            <h1>✨ <span>ساخت تصویر</span> حرفه‌ای ✨</h1>
+            
+            <div class="param-grid">
+                <!-- پارامترهای پیشرفته -->
+                <div class="param-item">
+                    <label><i>🎨</i> رنگ اصلی</label>
+                    <input type="color" id="baseColor" value="#3b82f6">
+                </div>
+                <div class="param-item">
+                    <label><i>🌈</i> رنگ دوم</label>
+                    <input type="color" id="secondColor" value="#facc15">
+                </div>
+                <div class="param-item">
+                    <label><i>🎭</i> رنگ سوم</label>
+                    <input type="color" id="thirdColor" value="#ec4899">
+                </div>
+                <div class="param-item">
+                    <label><i>🌀</i> سبک</label>
+                    <select id="styleSelect">
+                        <option value="gradient-wave">موج‌گرادیان</option>
+                        <option value="neon-circles" selected>دایره‌های نئونی</option>
+                        <option value="particle-burst">انفجار ذرات</option>
+                        <option value="glass-morphism">شیشه‌ای مدرن</option>
+                        <option value="mandala">ماندالا</option>
+                        <option value="abstract-geometric">هندسی انتزاعی</option>
+                    </select>
+                </div>
+                <div class="param-item">
+                    <label><i>💫</i> پیچیدگی</label>
+                    <input type="range" id="complexity" min="1" max="100" value="55">
+                    <div class="range-value" id="complexityValue">55%</div>
+                </div>
+                <div class="param-item">
+                    <label><i>🎯</i> وضوح</label>
+                    <select id="resolutionSelect">
+                        <option value="800x450">استاندارد (800×450)</option>
+                        <option value="1200x675">HD (1200×675)</option>
+                        <option value="1920x1080">Full HD (1920×1080)</option>
+                        <option value="2560x1440">2K (2560×1440)</option>
+                    </select>
+                </div>
+                <div class="param-item">
+                    <label><i>🌟</i> افکت ویژه</label>
+                    <select id="effectSelect">
+                        <option value="none">بدون افکت</option>
+                        <option value="glow" selected>تابش (Glow)</option>
+                        <option value="shadow">سایه عمیق</option>
+                        <option value="vignette">وینیت</option>
+                        <option value="noise">نویز فیلم</option>
+                        <option value="vibrant">افزایش اشباع</option>
+                    </select>
+                </div>
+                <div class="param-item">
+                    <label><i>🔄</i> چرخش</label>
+                    <input type="range" id="rotation" min="0" max="360" value="0">
+                    <div class="range-value" id="rotationValue">0°</div>
+                </div>
+                <div class="param-item full-width">
+                    <label><i>🎬</i> انیمیشن</label>
+                    <select id="animationSelect">
+                        <option value="none">بدون انیمیشن</option>
+                        <option value="fade">محو شدن</option>
+                        <option value="pulse">ضربان</option>
+                        <option value="rotate">چرخش</option>
+                        <option value="particle">ذرات متحرک</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="number" id="imageCount">0</div>
+                    <div>تصاویر ساخته شده</div>
+                </div>
+                <div class="stat-item">
+                    <div class="number" id="lastSize">-</div>
+                    <div>آخرین سایز</div>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-primary" id="generateBtn">🚀 تولید تصویر</button>
+                <button class="btn btn-success" id="randomBtn">🎲 تصادفی</button>
+                <button class="btn btn-secondary" id="downloadBtn">⬇️ دانلود</button>
+                <button class="btn btn-secondary" id="clearHistoryBtn">🗑️ پاک کردن تاریخچه</button>
+            </div>
+
+            <div class="image-container">
+                <canvas id="imageCanvas" width="800" height="450"></canvas>
+                <div class="loading" id="loadingIndicator">⏳ در حال تولید...</div>
+                <div class="image-caption">
+                    <strong>واقعی & جذاب</strong> · با پارامترهای دلخواه شما · کلیک روی <strong>تولید</strong>
+                </div>
+            </div>
+
+            <!-- ===== فوتر با نام و لینک کانال ===== -->
+            <div class="footer">
+                <div class="creator">
+                    ساخته شده توسط <strong>محمد حسین حبیبی راد</strong>
+                </div>
+                <a href="https://eitaa.com/irandigital_python" target="_blank" class="channel-link">
+                    <span class="eitaa-icon">🇮🇷</span>
+                    <i>📱</i> کانال ما در پیام‌رسان ایتا
+                </a>
+            </div>
+        </div>
+
+        <!-- بخش تاریخچه -->
+        <div class="card card-full history-section">
+            <h2 style="color: #f0e9db; font-weight: 300; margin-bottom: 15px;">📸 تاریخچه تصاویر</h2>
+            <div class="history-grid" id="historyGrid">
+                <!-- تاریخچه به صورت داینامیک پر می‌شود -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // ========== بخش اصلی ==========
+            const canvas = document.getElementById('imageCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            // عناصر ورودی
+            const baseColorInput = document.getElementById('baseColor');
+            const secondColorInput = document.getElementById('secondColor');
+            const thirdColorInput = document.getElementById('thirdColor');
+            const styleSelect = document.getElementById('styleSelect');
+            const complexityRange = document.getElementById('complexity');
+            const complexityValue = document.getElementById('complexityValue');
+            const effectSelect = document.getElementById('effectSelect');
+            const resolutionSelect = document.getElementById('resolutionSelect');
+            const rotationRange = document.getElementById('rotation');
+            const rotationValue = document.getElementById('rotationValue');
+            const animationSelect = document.getElementById('animationSelect');
+            
+            const generateBtn = document.getElementById('generateBtn');
+            const randomBtn = document.getElementById('randomBtn');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const clearHistoryBtn = document.getElementById('clearHistoryBtn');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const historyGrid = document.getElementById('historyGrid');
+            const imageCount = document.getElementById('imageCount');
+            const lastSize = document.getElementById('lastSize');
+
+            // متغیرهای حالت
+            let imageHistory = [];
+            let imageCounter = 0;
+            let animationFrame = null;
+            let currentAnimation = 'none';
+
+            // ========== توابع کمکی ==========
+            function rand(min, max) {
+                return Math.random() * (max - min) + min;
+            }
+
+            function randInt(min, max) {
+                return Math.floor(rand(min, max + 1));
+            }
+
+            // به‌روزرسانی مقادیر
+            complexityRange.addEventListener('input', function() {
+                complexityValue.textContent = this.value + '%';
+            });
+
+            rotationRange.addEventListener('input', function() {
+                rotationValue.textContent = this.value + '°';
+            });
+
+            // ========== تابع اصلی تولید تصویر ==========
+            function generateImage(animate = false) {
+                // نمایش لودینگ
+                loadingIndicator.classList.add('active');
+                
+                // استفاده از setTimeout برای نمایش لودینگ
+                setTimeout(() => {
+                    try {
+                        // دریافت رزولوشن
+                        const resolution = resolutionSelect.value;
+                        let [width, height] = resolution.split('x').map(Number);
+                        
+                        // تنظیم سایز canvas
+                        canvas.width = width;
+                        canvas.height = height;
+                        
+                        const w = canvas.width;
+                        const h = canvas.height;
+                        
+                        // دریافت پارامترها
+                        const baseColor = baseColorInput.value;
+                        const secondColor = secondColorInput.value;
+                        const thirdColor = thirdColorInput.value;
+                        const style = styleSelect.value;
+                        const complexity = parseInt(complexityRange.value) / 100;
+                        const effect = effectSelect.value;
+                        const rotation = parseInt(rotationRange.value) * Math.PI / 180;
+                        
+                        // ذخیره context برای چرخش
+                        ctx.save();
+                        ctx.translate(w/2, h/2);
+                        ctx.rotate(rotation);
+                        ctx.translate(-w/2, -h/2);
+                        
+                        // پاک کردن بوم
+                        ctx.clearRect(0, 0, w, h);
+                        
+                        // ---- پس‌زمینه پایه ----
+                        const grad = ctx.createRadialGradient(w*0.3, h*0.3, 50, w*0.5, h*0.5, w*0.9);
+                        grad.addColorStop(0, baseColor);
+                        grad.addColorStop(0.5, secondColor);
+                        grad.addColorStop(1, thirdColor);
+                        ctx.fillStyle = grad;
+                        ctx.fillRect(0, 0, w, h);
+
+                        // ---- تابع اعمال افکت ----
+                        function applyEffect() {
+                            if (effect === 'none') return;
+                            
+                            const imageData = ctx.getImageData(0, 0, w, h);
+                            const data = imageData.data;
+                            
+                            if (effect === 'glow') {
+                                for (let i = 0; i < data.length; i += 4) {
+                                    data[i] = Math.min(255, data[i] * 1.2);
+                                    data[i+1] = Math.min(255, data[i+1] * 1.2);
+                                    data[i+2] = Math.min(255, data[i+2] * 1.2);
+                                }
+                            } else if (effect === 'shadow') {
+                                for (let y = 0; y < h; y++) {
+                                    for (let x = 0; x < w; x++) {
+                                        const idx = (y * w + x) * 4;
+                                        const distX = (x / w - 0.5) * 2;
+                                        const distY = (y / h - 0.5) * 2;
+                                        const dist = Math.sqrt(distX*distX + distY*distY);
+                                        const factor = Math.min(1, dist * 0.9);
+                                        data[idx] = data[idx] * (1 - factor * 0.5);
+                                        data[idx+1] = data[idx+1] * (1 - factor * 0.5);
+                                        data[idx+2] = data[idx+2] * (1 - factor * 0.5);
+                                    }
+                                }
+                            } else if (effect === 'vignette') {
+                                for (let y = 0; y < h; y++) {
+                                    for (let x = 0; x < w; x++) {
+                                        const idx = (y * w + x) * 4;
+                                        const dx = (x / w - 0.5) * 2;
+                                        const dy = (y / h - 0.5) * 2;
+                                        const dist = Math.sqrt(dx*dx + dy*dy);
+                                        const vignette = 1 - Math.min(1, dist * 0.8);
+                                        data[idx] = data[idx] * vignette;
+                                        data[idx+1] = data[idx+1] * vignette;
+                                        data[idx+2] = data[idx+2] * vignette;
+                                    }
+                                }
+                            } else if (effect === 'noise') {
+                                for (let i = 0; i < data.length; i += 4) {
+                                    const noise = (rand(-1, 1) * 20);
+                                    data[i] = Math.max(0, Math.min(255, data[i] + noise));
+                                    data[i+1] = Math.max(0, Math.min(255, data[i+1] + noise));
+                                    data[i+2] = Math.max(0, Math.min(255, data[i+2] + noise));
+                                }
+                            } else if (effect === 'vibrant') {
+                                for (let i = 0; i < data.length; i += 4) {
+                                    const gray = 0.299 * data[i] + 0.587 * data[i+1] + 0.114 * data[i+2];
+                                    const intensity = 1.3;
+                                    data[i] = Math.min(255, gray + (data[i] - gray) * intensity);
+                                    data[i+1] = Math.min(255, gray + (data[i+1] - gray) * intensity);
+                                    data[i+2] = Math.min(255, gray + (data[i+2] - gray) * intensity);
+                                }
+                            }
+                            ctx.putImageData(imageData, 0, 0);
+                        }
+
+                        // ---- رسم بر اساس سبک ----
+                        if (style === 'gradient-wave') {
+                            const step = Math.max(4, 10 - complexity * 6);
+                            for (let i = 0; i < 30 + complexity * 50; i++) {
+                                ctx.beginPath();
+                                const x = rand(0, w);
+                                const y = rand(0, h);
+                                const radius = rand(20, 150 + complexity * 180);
+                                const startAngle = rand(0, Math.PI * 2);
+                                const endAngle = startAngle + rand(0.5, Math.PI * 1.8);
+                                ctx.arc(x, y, radius, startAngle, endAngle);
+                                ctx.strokeStyle = i % 2 === 0 ? baseColor : secondColor;
+                                ctx.globalAlpha = rand(0.1, 0.3 + complexity * 0.3);
+                                ctx.lineWidth = rand(2, 8 + complexity * 12);
+                                ctx.stroke();
+                            }
+                            ctx.globalAlpha = 1;
+                        }
+                        else if (style === 'neon-circles') {
+                            const count = 10 + Math.floor(complexity * 45);
+                            for (let i = 0; i < count; i++) {
+                                const x = rand(0, w);
+                                const y = rand(0, h);
+                                const radius = rand(15, 100 + complexity * 140);
+                                const color = i % 3 === 0 ? baseColor : (i % 3 === 1 ? secondColor : thirdColor);
+                                ctx.beginPath();
+                                ctx.arc(x, y, radius, 0, Math.PI * 2);
+                                ctx.shadowColor = color;
+                                ctx.shadowBlur = 30 + complexity * 60;
+                                ctx.fillStyle = color;
+                                ctx.globalAlpha = rand(0.15, 0.45 + complexity * 0.3);
+                                ctx.fill();
+                                if (i % 2 === 0) {
+                                    ctx.beginPath();
+                                    ctx.arc(x, y, radius * 0.6, 0, Math.PI * 2);
+                                    ctx.strokeStyle = '#ffffff';
+                                    ctx.lineWidth = 1.5;
+                                    ctx.globalAlpha = 0.2 + complexity * 0.3;
+                                    ctx.stroke();
+                                }
+                            }
+                            ctx.shadowBlur = 0;
+                            ctx.globalAlpha = 1;
+                        }
+                        else if (style === 'particle-burst') {
+                            const cx = w/2, cy = h/2;
+                            const count = 60 + Math.floor(complexity * 220);
+                            for (let i = 0; i < count; i++) {
+                                const angle = rand(0, Math.PI * 2);
+                                const dist = rand(20, 160 + complexity * 220);
+                                const x = cx + Math.cos(angle) * dist;
+                                const y = cy + Math.sin(angle) * dist;
+                                const size = rand(3, 12 + complexity * 20);
+                                const color = i % 3 === 0 ? baseColor : (i % 3 === 1 ? secondColor : thirdColor);
+                                ctx.beginPath();
+                                ctx.arc(x, y, size, 0, Math.PI * 2);
+                                ctx.shadowColor = color;
+                                ctx.shadowBlur = 20 + complexity * 40;
+                                ctx.fillStyle = color;
+                                ctx.globalAlpha = rand(0.4, 0.9);
+                                ctx.fill();
+                                if (i % 3 === 0 && dist > 60) {
+                                    ctx.beginPath();
+                                    ctx.moveTo(cx, cy);
+                                    ctx.lineTo(x, y);
+                                    ctx.strokeStyle = secondColor;
+                                    ctx.globalAlpha = 0.15 + complexity * 0.2;
+                                    ctx.lineWidth = 1.5;
+                                    ctx.stroke();
+                                }
+                            }
+                            ctx.shadowBlur = 0;
+                            ctx.globalAlpha = 1;
+                        }
+                        else if (style === 'glass-morphism') {
+                            const shapes = 15 + Math.floor(complexity * 45);
+                            for (let i = 0; i < shapes; i++) {
+                                const x = rand(0, w);
+                                const y = rand(0, h);
+                                const wShape = rand(20, 100 + complexity * 120);
+                                const hShape = rand(20, 100 + complexity * 120);
+                                const rot = rand(0, Math.PI * 2);
+                                ctx.save();
+                                ctx.translate(x, y);
+                                ctx.rotate(rot);
+                                ctx.shadowColor = 'rgba(255,255,255,0.2)';
+                                ctx.shadowBlur = 20;
+                                ctx.globalAlpha = rand(0.1, 0.3 + complexity * 0.3);
+                                ctx.fillStyle = i % 3 === 0 ? baseColor : (i % 3 === 1 ? secondColor : thirdColor);
+                                const radiusRect = rand(8, 30);
+                                ctx.beginPath();
+                                ctx.roundRect(-wShape/2, -hShape/2, wShape, hShape, radiusRect);
+                                ctx.fill();
+                                ctx.shadowBlur = 0;
+                                ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+                                ctx.lineWidth = 2;
+                                ctx.stroke();
+                                ctx.restore();
+                            }
+                            for (let i = 0; i < 30 + complexity * 50; i++) {
+                                const x = rand(0, w);
+                                const y = rand(0, h);
+                                ctx.beginPath();
+                                ctx.arc(x, y, rand(1, 4), 0, Math.PI * 2);
+                                ctx.fillStyle = '#ffffff';
+                                ctx.globalAlpha = rand(0.1, 0.5);
+                                ctx.fill();
+                            }
+                            ctx.globalAlpha = 1;
+                        }
+                        else if (style === 'mandala') {
+                            // ماندالا
+                            const cx = w/2, cy = h/2;
+                            const layers = 3 + Math.floor(complexity * 7);
+                            const maxRadius = Math.min(w, h) * 0.45;
+                            for (let layer = 0; layer < layers; layer++) {
+                                const radius = maxRadius * (layer + 1) / layers;
+                                const petals = 6 + Math.floor(complexity * 18);
+                                const color = layer % 3 === 0 ? baseColor : (layer % 3 === 1 ? secondColor : thirdColor);
+                                for (let i = 0; i < petals; i++) {
+                                    const angle = (i / petals) * Math.PI * 2;
+                                    const x = cx + Math.cos(angle) * radius;
+                                    const y = cy + Math.sin(angle) * radius;
+                                    ctx.beginPath();
+                                    ctx.arc(x, y, radius * 0.2 * (1 - layer * 0.05), 0, Math.PI * 2);
+                                    ctx.fillStyle = color;
+                                    ctx.globalAlpha = 0.6 - layer * 0.05;
+                                    ctx.shadowColor = color;
+                                    ctx.shadowBlur = 15;
+                                    ctx.fill();
+                                }
+                            }
+                            ctx.shadowBlur = 0;
+                            ctx.globalAlpha = 1;
+                        }
+                        else if (style === 'abstract-geometric') {
+                            const shapes = 20 + Math.floor(complexity * 40);
+                            for (let i = 0; i < shapes; i++) {
+                                const x = rand(0, w);
+                                const y = rand(0, h);
+                                const size = rand(20, 80 + complexity * 100);
+                                const color = i % 3 === 0 ? baseColor : (i % 3 === 1 ? secondColor : thirdColor);
+                                ctx.save();
+                                ctx.translate(x, y);
+                                ctx.rotate(rand(0, Math.PI * 2));
+                                ctx.globalAlpha = rand(0.3, 0.8);
+                                ctx.fillStyle = color;
+                                ctx.shadowColor = color;
+                                ctx.shadowBlur = 10;
+                                const shapeType = Math.floor(rand(0, 3));
+                                if (shapeType === 0) {
+                                    // مثلث
+                                    ctx.beginPath();
+                                    ctx.moveTo(0, -size/2);
+                                    ctx.lineTo(size/2, size/2);
+                                    ctx.lineTo(-size/2, size/2);
+                                    ctx.closePath();
+                                    ctx.fill();
+                                } else if (shapeType === 1) {
+                                    // مستطیل
+                                    ctx.fillRect(-size/2, -size/3, size, size*2/3);
+                                } else {
+                                    // شش ضلعی
+                                    ctx.beginPath();
+                                    for (let j = 0; j < 6; j++) {
+                                        const angle = (j / 6) * Math.PI * 2 - Math.PI/2;
+                                        const r = size/2;
+                                        if (j === 0) ctx.moveTo(r * Math.cos(angle), r * Math.sin(angle));
+                                        else ctx.lineTo(r * Math.cos(angle), r * Math.sin(angle));
+                                    }
+                                    ctx.closePath();
+                                    ctx.fill();
+                                }
+                                ctx.restore();
+                            }
+                            ctx.shadowBlur = 0;
+                            ctx.globalAlpha = 1;
+                        }
+
+                        // اعمال افکت
+                        applyEffect();
+
+                        // هایلایت نرم
+                        const gradHighlight = ctx.createRadialGradient(w*0.7, h*0.2, 10, w*0.7, h*0.2, w*0.8);
+                        gradHighlight.addColorStop(0, 'rgba(255,255,255,0.08)');
+                        gradHighlight.addColorStop(1, 'rgba(255,255,255,0)');
+                        ctx.fillStyle = gradHighlight;
+                        ctx.fillRect(0, 0, w, h);
+
+                        ctx.restore(); // بازگرداندن چرخش
+
+                        // ذخیره در تاریخچه
+                        saveToHistory();
+                        
+                        // به‌روزرسانی آمار
+                        imageCounter++;
+                        imageCount.textContent = imageCounter;
+                        lastSize.textContent = `${w}×${h}`;
+
+                        // اجرای انیمیشن اگر انتخاب شده باشد
+                        const animation = animationSelect.value;
+                        if (animation !== 'none' && !animate) {
+                            startAnimation(animation);
+                        }
+
+                    } catch (error) {
+                        console.error('Error generating image:', error);
+                    } finally {
+                        loadingIndicator.classList.remove('active');
+                    }
+                }, 100);
+            }
+
+            // ========== انیمیشن‌ها ==========
+            function startAnimation(type) {
+                // توقف انیمیشن قبلی
+                if (animationFrame) {
+                    cancelAnimationFrame(animationFrame);
+                    animationFrame = null;
+                }
+                
+                currentAnimation = type;
+                let startTime = performance.now();
+                const originalData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                
+                function animate(time) {
+                    if (currentAnimation !== type) return;
+                    
+                    const elapsed = (time - startTime) / 1000;
+                    
+                    if (type === 'fade') {
+                        const alpha = 0.5 + 0.5 * Math.sin(elapsed * 2);
+                        ctx.putImageData(originalData, 0, 0);
+                        ctx.fillStyle = `rgba(0,0,0,${1 - alpha})`;
+                        ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    } else if (type === 'pulse') {
+                        const scale = 1 + 0.05 * Math.sin(elapsed * 3);
+                        ctx.putImageData(originalData, 0, 0);
+                        // اعمال بزرگنمایی
+                        const tempCanvas = document.createElement('canvas');
+                        tempCanvas.width = canvas.width;
+                        tempCanvas.height = canvas.height;
+                        const tempCtx = tempCanvas.getContext('2d');
+                        tempCtx.putImageData(originalData, 0, 0);
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        const cx = canvas.width/2, cy = canvas.height/2;
+                        ctx.translate(cx, cy);
+                        ctx.scale(scale, scale);
+                        ctx.translate(-cx, -cy);
+                        ctx.drawImage(tempCanvas, 0, 0);
+                        ctx.setTransform(1, 0, 0, 1, 0, 0);
+                    } else if (type === 'rotate') {
+                        const rot = elapsed * 0.5;
+                        ctx.putImageData(originalData, 0, 0);
+                        const tempCanvas = document.createElement('canvas');
+                        tempCanvas.width = canvas.width;
+                        tempCanvas.height = canvas.height;
+                        const tempCtx = tempCanvas.getContext('2d');
+                        tempCtx.putImageData(originalData, 0, 0);
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        const cx = canvas.width/2, cy = canvas.height/2;
+                        ctx.translate(cx, cy);
+                        ctx.rotate(rot);
+                        ctx.translate(-cx, -cy);
+                        ctx.drawImage(tempCanvas, 0, 0);
+                        ctx.setTransform(1, 0, 0, 1, 0, 0);
+                    } else if (type === 'particle') {
+                        // انیمیشن ذرات ساده
+                        ctx.putImageData(originalData, 0, 0);
+                        for (let i = 0; i < 50; i++) {
+                            const x = (Math.sin(elapsed * 2 + i * 1.3) * 0.5 + 0.5) * canvas.width;
+                            const y = (Math.cos(elapsed * 1.7 + i * 1.7) * 0.5 + 0.5) * canvas.height;
+                            ctx.beginPath();
+                            ctx.arc(x, y, 2 + Math.sin(elapsed + i) * 1, 0, Math.PI * 2);
+                            ctx.fillStyle = `hsla(${i * 20 + elapsed * 50}, 80%, 60%, 0.5)`;
+                            ctx.fill();
+                        }
+                    }
+                    
+                    animationFrame = requestAnimationFrame(animate);
+                }
+                
+                animationFrame = requestAnimationFrame(animate);
+            }
+
+            // ========== تاریخچه ==========
+            function saveToHistory() {
+                const dataUrl = canvas.toDataURL('image/png');
+                imageHistory.push(dataUrl);
+                if (imageHistory.length > 20) {
+                    imageHistory.shift();
+                }
+                updateHistoryDisplay();
+            }
+
+            function updateHistoryDisplay() {
+                historyGrid.innerHTML = '';
+                imageHistory.slice().reverse().forEach((url, index) => {
+                    const item = document.createElement('div');
+                    item.className = 'history-item';
+                    const img = document.createElement('img');
+                    img.src = url;
+                    img.alt = `تصویر ${imageHistory.length - index}`;
+                    item.appendChild(img);
+                    item.addEventListener('click', function() {
+                        const imgObj = new Image();
+                        imgObj.onload = function() {
+                            canvas.width = imgObj.width;
+                            canvas.height = imgObj.height;
+                            ctx.drawImage(imgObj, 0, 0);
+                        };
+                        imgObj.src = url;
+                    });
+                    historyGrid.appendChild(item);
+                });
+            }
+
+            function clearHistory() {
+                imageHistory = [];
+                updateHistoryDisplay();
+            }
+
+            // ========== رویدادها ==========
+            generateBtn.addEventListener('click', function() {
+                generateImage(false);
+            });
+
+            randomBtn.addEventListener('click', function() {
+                // تولید مقادیر تصادفی
+                baseColorInput.value = `hsl(${randInt(0, 360)}, ${randInt(60, 100)}%, ${randInt(40, 80)}%)`;
+                secondColorInput.value = `hsl(${randInt(0, 360)}, ${randInt(60, 100)}%, ${randInt(40, 80)}%)`;
+                thirdColorInput.value = `hsl(${randInt(0, 360)}, ${randInt(60, 100)}%, ${randInt(40, 80)}%)`;
+                complexityRange.value = randInt(20, 90);
+                complexityValue.textContent = complexityRange.value + '%';
+                rotationRange.value = randInt(0, 360);
+                rotationValue.textContent = rotationRange.value + '°';
+                const styles = ['gradient-wave', 'neon-circles', 'particle-burst', 'glass-morphism', 'mandala', 'abstract-geometric'];
+                styleSelect.value = styles[randInt(0, styles.length - 1)];
+                const effects = ['none', 'glow', 'shadow', 'vignette', 'noise', 'vibrant'];
+                effectSelect.value = effects[randInt(0, effects.length - 1)];
+                const animations = ['none', 'fade', 'pulse', 'rotate', 'particle'];
+                animationSelect.value = animations[randInt(0, animations.length - 1)];
+                
+                generateImage(false);
+            });
+
+            downloadBtn.addEventListener('click', function() {
+                const link = document.createElement('a');
+                link.download = `image-${Date.now()}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+
+            clearHistoryBtn.addEventListener('click', clearHistory);
+
+            // ========== polyfill برای roundRect ==========
+            if (!CanvasRenderingContext2D.prototype.roundRect) {
+                CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, radii) {
+                    const r = typeof radii === 'number' ? radii : (radii || 0);
+                    this.moveTo(x + r, y);
+                    this.arcTo(x + w, y, x + w, y + h, r);
+                    this.arcTo(x + w, y + h, x, y + h, r);
+                    this.arcTo(x, y + h, x, y, r);
+                    this.arcTo(x, y, x + w, y, r);
+                    return this;
+                };
+            }
+
+            // تولید تصویر اولیه
+            generateImage(false);
+        })();
+    </script>
+</body>
+</html>
